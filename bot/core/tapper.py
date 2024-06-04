@@ -393,7 +393,7 @@ class Tapper:
                 balance = new_balance
                 total = int(player_data.get('totalCoins', 0))
                 earn_on_hour = player_data['earnPassivePerHour']
-
+                boosts = await self.get_boosts(http_client=http_client)
                 energy_boost = next((boost for boost in boosts if boost['id'] == 'BoostFullAvailableTaps'), {})
 
                 logger.success(f"{self.session_name} | Successful tapped! | "
