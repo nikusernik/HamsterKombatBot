@@ -104,7 +104,7 @@ class Tapper:
             return access_token
         except Exception as error:
             logger.error(f"{self.session_name} | Unknown error while getting Access Token: {error} | "
-                         f"Response text: {escape_html(response_text)[:128]}...")
+                         f"Response text: {escape_html(response_text)[:256]}...")
             await asyncio.sleep(delay=3)
 
     async def get_me_telegram(self, http_client: aiohttp.ClientSession) -> dict[str]:
@@ -121,26 +121,27 @@ class Tapper:
             return tasks
         except Exception as error:
             logger.error(f"{self.session_name} | Unknown error while getting Me Telegram: {error} | "
-                         f"Response text: {escape_html(response_text)[:128]}...")
+                         f"Response text: {escape_html(response_text)[:256]}...")
             await asyncio.sleep(delay=3)
 
     async def get_profile_data(self, http_client: aiohttp.ClientSession) -> dict[str]:
         response_text = ''
-        try:
-            response = await http_client.post(url='https://api.hamsterkombat.io/clicker/sync',
-                                              json={})
-            response_text = await response.text()
-            if response.status != 422:
-                response.raise_for_status()
+        while True:
+            try:
+                response = await http_client.post(url='https://api.hamsterkombat.io/clicker/sync',
+                                                  json={})
+                response_text = await response.text()
+                if response.status != 422:
+                    response.raise_for_status()
 
-            response_json = json.loads(response_text)
-            profile_data = response_json.get('clickerUser') or response_json.get('found', {}).get('clickerUser', {})
+                response_json = json.loads(response_text)
+                profile_data = response_json.get('clickerUser') or response_json.get('found', {}).get('clickerUser', {})
 
-            return profile_data
-        except Exception as error:
-            logger.error(f"{self.session_name} | Unknown error while getting Profile Data: {error} | "
-                         f"Response text: {escape_html(response_text)[:128]}...")
-            await asyncio.sleep(delay=3)
+                return profile_data
+            except Exception as error:
+                logger.error(f"{self.session_name} | Unknown error while getting Profile Data: {error} | "
+                             f"Response text: {escape_html(response_text)[:256]}...")
+                await asyncio.sleep(delay=3)
 
     async def get_config(self, http_client: aiohttp.ClientSession) -> dict[str]:
         response_text = ''
@@ -156,7 +157,7 @@ class Tapper:
             return config
         except Exception as error:
             logger.error(f"{self.session_name} | Unknown error while getting Config: {error} | "
-                         f"Response text: {escape_html(response_text)[:128]}...")
+                         f"Response text: {escape_html(response_text)[:256]}...")
             await asyncio.sleep(delay=3)
 
     async def get_tasks(self, http_client: aiohttp.ClientSession) -> dict[str]:
@@ -173,7 +174,7 @@ class Tapper:
             return tasks
         except Exception as error:
             logger.error(f"{self.session_name} | Unknown error while getting Tasks: {error} | "
-                         f"Response text: {escape_html(response_text)[:128]}...")
+                         f"Response text: {escape_html(response_text)[:256]}...")
             await asyncio.sleep(delay=3)
 
     async def select_exchange(self, http_client: aiohttp.ClientSession, exchange_id: str) -> bool:
@@ -187,7 +188,7 @@ class Tapper:
             return True
         except Exception as error:
             logger.error(f"{self.session_name} | Unknown error while Select Exchange: {error} | "
-                         f"Response text: {escape_html(response_text)[:128]}...")
+                         f"Response text: {escape_html(response_text)[:256]}...")
             await asyncio.sleep(delay=3)
 
             return False
@@ -203,7 +204,7 @@ class Tapper:
             return True
         except Exception as error:
             logger.error(f"{self.session_name} | Unknown error while getting Daily: {error} | "
-                         f"Response text: {escape_html(response_text)[:128]}...")
+                         f"Response text: {escape_html(response_text)[:256]}...")
             await asyncio.sleep(delay=3)
 
             return False
@@ -219,7 +220,7 @@ class Tapper:
             return True
         except Exception as error:
             logger.error(f"{self.session_name} | Unknown error while Apply {boost_id} Boost: {error} | "
-                         f"Response text: {escape_html(response_text)[:128]}...")
+                         f"Response text: {escape_html(response_text)[:256]}...")
             await asyncio.sleep(delay=3)
 
             return False
@@ -238,7 +239,7 @@ class Tapper:
             return upgrades
         except Exception as error:
             logger.error(f"{self.session_name} | Unknown error while getting Upgrades: {error} | "
-                         f"Response text: {escape_html(response_text)[:128]}...")
+                         f"Response text: {escape_html(response_text)[:256]}...")
             await asyncio.sleep(delay=3)
 
     async def buy_upgrade(self, http_client: aiohttp.ClientSession, upgrade_id: str) -> tuple[bool, dict[str]]:
@@ -256,7 +257,7 @@ class Tapper:
             return True, upgrades
         except Exception as error:
             logger.error(f"{self.session_name} | Unknown error while buying Upgrade: {error} | "
-                         f"Response text: {escape_html(response_text)[:128]}...")
+                         f"Response text: {escape_html(response_text)[:256]}...")
             await asyncio.sleep(delay=3)
 
             return False, {}
@@ -274,7 +275,7 @@ class Tapper:
             return boosts
         except Exception as error:
             logger.error(f"{self.session_name} | Unknown error while getting Boosts: {error} | "
-                         f"Response text: {escape_html(response_text)[:128]}...")
+                         f"Response text: {escape_html(response_text)[:256]}...")
             await asyncio.sleep(delay=3)
 
     async def send_taps(self, http_client: aiohttp.ClientSession, available_energy: int, taps: int) -> dict[str]:
@@ -293,7 +294,7 @@ class Tapper:
             return player_data
         except Exception as error:
             logger.error(f"{self.session_name} | Unknown error while Tapping: {error} | "
-                         f"Response text: {escape_html(response_text)[:128]}...")
+                         f"Response text: {escape_html(response_text)[:256]}...")
             await asyncio.sleep(delay=3)
 
     async def check_proxy(self, http_client: aiohttp.ClientSession, proxy: Proxy) -> None:
@@ -310,7 +311,6 @@ class Tapper:
         active_turbo = False
 
         proxy_conn = ProxyConnector().from_url(proxy) if proxy else None
-
         http_client = aiohttp.ClientSession(headers=headers, connector=proxy_conn)
 
         if proxy:
@@ -320,6 +320,14 @@ class Tapper:
 
         while True:
             try:
+                if http_client.closed:
+                    if proxy_conn:
+                        if not proxy_conn.closed:
+                            proxy_conn.close()
+
+                    proxy_conn = ProxyConnector().from_url(proxy) if proxy else None
+                    http_client = aiohttp.ClientSession(headers=headers, connector=proxy_conn)
+
                 if time() - access_token_created_time >= 3600:
                     access_token = await self.login(http_client=http_client, tg_web_data=tg_web_data)
 
@@ -334,9 +342,6 @@ class Tapper:
                     await self.get_config(http_client=http_client)
 
                     profile_data = await self.get_profile_data(http_client=http_client)
-
-                    if not profile_data:
-                        continue
 
                     last_passive_earn = profile_data['lastPassiveEarn']
                     earn_on_hour = profile_data['earnPassivePerHour']
@@ -420,11 +425,11 @@ class Tapper:
                             available_upgrades = [
                                 data for data in upgrades
                                 if data['isAvailable'] is True
-                                   and data['isExpired'] is False
-                                   and data.get('cooldownSeconds', 0) == 0
-                                   and data.get('maxLevel', data['level']) >= data['level']
-                                   and (data.get('condition') is None
-                                        or data['condition'].get('_type') != 'SubscribeTelegramChannel')
+                                and data['isExpired'] is False
+                                and data.get('cooldownSeconds', 0) == 0
+                                and data.get('maxLevel', data['level']) >= data['level']
+                                and (data.get('condition') is None
+                                     or data['condition'].get('_type') != 'SubscribeTelegramChannel')
                             ]
 
                             queue = []
@@ -480,7 +485,8 @@ class Tapper:
                     if available_energy < settings.MIN_AVAILABLE_ENERGY:
                         await http_client.close()
                         if proxy_conn:
-                            proxy_conn.close()
+                            if not proxy_conn.closed:
+                                proxy_conn.close()
 
                         random_sleep = randint(settings.SLEEP_BY_MIN_ENERGY[0], settings.SLEEP_BY_MIN_ENERGY[1])
 
@@ -488,9 +494,6 @@ class Tapper:
                         logger.info(f"{self.session_name} | Sleep {random_sleep:,}s")
 
                         await asyncio.sleep(delay=random_sleep)
-
-                        proxy_conn = ProxyConnector().from_url(proxy) if proxy else None
-                        http_client = aiohttp.ClientSession(headers=headers, connector=proxy_conn)
 
                         access_token_created_time = 0
 
