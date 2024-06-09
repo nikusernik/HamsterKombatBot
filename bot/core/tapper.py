@@ -430,11 +430,6 @@ class Tapper:
                 balance = new_balance
                 total = int(player_data.get('totalCoins', 0))
                 earn_on_hour = player_data['earnPassivePerHour']
-<<<<<<< HEAD
-                boosts = await self.get_boosts(http_client=http_client)
-                energy_boost = next((boost for boost in boosts if boost['id'] == 'BoostFullAvailableTaps'), {})
-=======
->>>>>>> refs/remotes/origin/main
 
                 logger.success(f"{self.session_name} | Successful tapped! | "
                                f"Balance: <c>{balance:,}</c> (<g>+{calc_taps:,}</g>) | Total: <e>{total:,}</e>")
