@@ -12,13 +12,14 @@ from bot.utils import logger
 from bot.core.tapper import run_tapper
 from bot.core.registrator import register_sessions
 
-
-start_text = """
+banner = """
 
 ▒█ ▒█ █▀▀█ █▀▄▀█ █▀▀ ▀▀█▀▀ █▀▀ █▀▀█ ▒█ ▄▀ █▀▀█ █▀▄▀█ █▀▀▄ █▀▀█ ▀▀█▀▀ ▒█▀▀█ █▀▀█ ▀▀█▀▀ 
 ▒█▀▀█ █▄▄█ █ ▀ █ ▀▀█   █   █▀▀ █▄▄▀ ▒█▀▄  █  █ █ ▀ █ █▀▀▄ █▄▄█   █   ▒█▀▀▄ █  █   █   
 ▒█ ▒█ ▀  ▀ ▀   ▀ ▀▀▀   ▀   ▀▀▀ ▀ ▀▀ ▒█ ▒█ ▀▀▀▀ ▀   ▀ ▀▀▀  ▀  ▀   ▀   ▒█▄▄█ ▀▀▀▀   ▀  
 
+"""
+options = """
 Select an action:
 
     1. Create session
@@ -35,7 +36,7 @@ def get_session_names() -> list[str]:
 
 def get_proxies() -> list[Proxy]:
     if settings.USE_PROXY_FROM_FILE:
-        with open(file='bot/config/proxies.txt', encoding='utf-8-sig') as file:
+        with open(file='./proxies.txt', encoding='utf-8-sig') as file:
             proxies = [Proxy.from_str(proxy=row.strip()).as_url for row in file]
     else:
         proxies = []
@@ -67,12 +68,14 @@ async def process() -> None:
     parser = argparse.ArgumentParser()
     parser.add_argument('-a', '--action', type=int, help='Action to perform')
 
+    print(banner)
+
     logger.info(f"Detected {len(get_session_names())} sessions | {len(get_proxies())} proxies")
 
     action = parser.parse_args().action
 
     if not action:
-        print(start_text)
+        print(options)
 
         while True:
             action = input("> ")

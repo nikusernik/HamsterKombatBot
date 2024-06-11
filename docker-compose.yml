@@ -6,6 +6,13 @@ services:
       context: .
     stop_signal: SIGINT
     restart: unless-stopped
-    command: "python3 main.py -a 2"
+    command: 
+      - python3
+      - main.py
+      - -a
+      - '2'
     volumes:
-      - .:/app
+      - ./sessions:/app/sessions
+      - ./proxies.txt:/app/proxies.txt
+    env_file:
+      - .env
