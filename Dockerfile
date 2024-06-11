@@ -1,8 +1,10 @@
 FROM python:3.10.11-alpine3.18
 
+WORKDIR app/
+
+
 RUN apk add --no-cache gcc musl-dev
 
-WORKDIR app/
 
 COPY requirements.txt requirements.txt
 
