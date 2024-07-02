@@ -287,9 +287,6 @@ class Tapper:
                 balance = new_balance
                 total = int(player_data.get('totalCoins', 0))
                 earn_on_hour = player_data['earnPassivePerHour']
-                # Activate buying upgrades on new accounts
-                if earn_on_hour == 0:
-                    earn_on_hour = 100
 
                 logger.success(
                     f'{self.session_name} | Successful tapped! | '
@@ -298,24 +295,6 @@ class Tapper:
 
                 if active_turbo is False:
                     if settings.AUTO_UPGRADE is True:
-<<<<<<< HEAD
-                        failed_attempts = 0
-                        for _ in range(settings.UPGRADES_COUNT):
-                            available_upgrades = [
-                                data
-                                for data in upgrades
-                                if data['isAvailable'] is True
-                                   and data['isExpired'] is False
-                                   and data.get('cooldownSeconds', 0) == 0
-                                   and data.get('maxLevel', data['level'])
-                                   >= data['level']
-                                   and (
-                                           data.get('condition') is None
-                                           or data['condition'].get('_type')
-                                           != 'SubscribeTelegramChannel'
-                                   )
-                            ]
-=======
                         async with self.tg_client:
                             for _ in range(settings.UPGRADES_COUNT):
                                 available_upgrades = [
@@ -339,7 +318,6 @@ class Tapper:
                                                )
                                        )
                                 ]
->>>>>>> 79e487b99df25b733195d56333af3464e2b8fc37
 
                                 queue = []
 
@@ -386,12 +364,6 @@ class Tapper:
                                     http_client=http_client, upgrade_id=upgrade_id
                                 )
 
-<<<<<<< HEAD
-                                await asyncio.sleep(delay=1)
-                            else:
-                                failed_attempts += 1
-                                if failed_attempts >= len(available_upgrades):
-=======
                                 if status is True:
                                     earn_on_hour += profit
                                     balance -= price
@@ -404,7 +376,6 @@ class Tapper:
 
                                     await asyncio.sleep(delay=1)
 
->>>>>>> 79e487b99df25b733195d56333af3464e2b8fc37
                                     continue
 
                     if available_energy < settings.MIN_AVAILABLE_ENERGY:
