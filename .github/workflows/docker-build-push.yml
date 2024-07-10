@@ -1,26 +1,21 @@
 name: Build and Push Docker Image
+
 on:
   push:
     branches:
       - main
-      - dev
   workflow_dispatch:
 
 permissions:
+  contents: read
   packages: write
 
 env:
   REGISTRY: ghcr.io
-  IMAGE_NAME: ghcr.io/shamhi/hamsterkombatbot
 
 jobs:
-  build_push:
+  build_and_push:
     runs-on: ubuntu-latest
-    permissions:
-      contents: read
-      packages: write
-      attestations: write
-      id-token: write
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
@@ -37,23 +32,41 @@ jobs:
           registry: ${{ env.REGISTRY }}
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
-          logout: false
 
       - name: Build Docker image
-        uses: docker/build-push-action@v5
+        uses: docker/build-push-action@v6
         with:
           context: .
-          push: false
           load: true
           platforms: linux/amd64
-          cache-from: type=gha
-          cache-to: type=gha,mode=max
+          tags: ${{ env.REGISTRY }}/${{ github.repository_owner }}/hamsterkombatbot:latest
+
+      - name: Create .env file
+        run: |
+          echo "API_ID=12345" > .env
+          echo "API_HASH=12345" >> .env
+
+      - name: Run container
+        run: |
+          docker compose up -d
+          docker compose ps
+
+      - name: Check container status
+        run: |
+          container_status=$(docker compose ps --status running --format "table {{.Name}}\t{{.Image}}\t{{.Command}}\t{{.Service}}\t{{.CreatedAt}}\t{{.Status}}\t{{.Ports}}")
+          echo "$container_status"
+          if echo "$container_status" | grep -q "Up"; then
+            echo "Container is running. Proceeding."
+          else
+            echo "Container is not running. Exiting."
+            exit 1
+          fi
 
       - name: Push Docker image
         if: success()
-        uses: docker/build-push-action@v5
+        uses: docker/build-push-action@v6
         with:
           context: .
           push: true
-          tags: |
-            ${{ env.IMAGE_NAME }}:${{ github.ref == 'refs/heads/main' && 'latest' || 'devbuild' }}
+          platforms: linux/amd64
+          tags: ${{ env.REGISTRY }}/${{ github.repository_owner }}/hamsterkombatbot:latest

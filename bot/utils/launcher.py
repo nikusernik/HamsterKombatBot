@@ -63,18 +63,6 @@ async def get_tg_clients() -> list[Client]:
     return tg_clients
 
 
-def prompt_for_action() -> int:
-    print(options)
-    while True:
-        action = input("> ")
-        if not action.isdigit():
-            logger.warning("Action must be a number")
-        elif action not in ['1', '2']:
-            logger.warning("Action must be 1 or 2")
-        else:
-            return int(action)
-
-
 async def process() -> None:
     parser = argparse.ArgumentParser()
     parser.add_argument('-a', '--action', type=int, help='Action to perform')
@@ -85,16 +73,25 @@ async def process() -> None:
 
     action = parser.parse_args().action
 
-    if action is None:
-        action = settings.ACTION
+    if not action:
+        print(options)
 
-    if action == 0:
-        action = prompt_for_action()
+        while True:
+            action = input("> ")
+
+            if not action.isdigit():
+                logger.warning("Action must be number")
+            elif action not in ['1', '2']:
+                logger.warning("Action must be 1 or 2")
+            else:
+                action = int(action)
+                break
 
     if action == 1:
         await register_sessions()
     elif action == 2:
         tg_clients = await get_tg_clients()
+
         await run_tasks(tg_clients=tg_clients)
 
 
