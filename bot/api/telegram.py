@@ -1,15 +1,17 @@
-import aiohttp
 from typing import Any
 
-from bot.api.http import make_post_request
+import aiohttp
+
+from bot.api.http import make_request
 
 
 async def get_me_telegram(
-    http_client: aiohttp.ClientSession,
+        http_client: aiohttp.ClientSession,
 ) -> dict[Any, Any] | Any:
-    response_json = await make_post_request(
+    response_json = await make_request(
         http_client,
-        'https://api.hamsterkombat.io/auth/me-telegram',
+        'POST',
+        'https://api.hamsterkombatgame.io/auth/me-telegram',
         {},
         'getting Me Telegram',
     )
