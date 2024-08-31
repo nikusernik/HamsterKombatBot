@@ -147,11 +147,29 @@
 </details>
 
 <details>
-  <summary><b>USE_RANDOM_MINI_GAME_KEY</b> - Use Random Mini Game Key</summary>
-  <p>Option to use a random key when participating in mini-games. Necessary if you have many accounts running simultaneously to avoid overloading the system.</p>
+  <summary><b>SLEEP_MINI_GAME_TILES</b> - Delay in the mini game TILES</summary>
+  <p>Option to set a random delay from the start of the game to its end.</p>
   <ul>
-    <li><strong>Example:</strong> <code>True / False</code></li>
-    <li><strong>Default:</strong> <code>True</code></li>
+    <li><strong>Example:</strong> <code>[600,900]</code></li>
+    <li><strong>Default:</strong> <code>[600,900]</code></li>
+  </ul>
+</details>
+
+<details>
+  <summary><b>SCORE_MINI_GAME_TILES</b> - Maximum score for the game TILES</summary>
+  <p>Sets the random score that will be reached in the game.</p>
+  <ul>
+    <li><strong>Example:</strong> <code>[300,500]</code></li>
+    <li><strong>Default:</strong> <code>[300,500]</code></li>
+  </ul>
+</details>
+
+<details>
+  <summary><b>GAMES_COUNT</b> - Number of games in TILES</summary>
+  <p>Defines the random number of games that the bot will play in one cycle.</p>
+  <ul>
+    <li><strong>Example:</strong> <code>[1,10]</code></li>
+    <li><strong>Default:</strong> <code>[1,10]</code></li>
   </ul>
 </details>
 
@@ -265,7 +283,6 @@ You can download the [**Repository**](https://github.com/shamhi/HamsterKombatBot
 ~/HamsterKombatBot >>> python3 -m venv venv
 ~/HamsterKombatBot >>> source venv/bin/activate
 ~/HamsterKombatBot >>> pip3 install -r requirements.txt
-~/HamsterKombatBot >>> playwright install
 ~/HamsterKombatBot >>> cp .env-example .env
 ~/HamsterKombatBot >>> nano .env  # Enter your API_ID and API_HASH
 ~/HamsterKombatBot >>> python3 main.py
@@ -274,7 +291,6 @@ You can download the [**Repository**](https://github.com/shamhi/HamsterKombatBot
 ~/HamsterKombatBot >>> python -m venv venv
 ~/HamsterKombatBot >>> venv\Scripts\activate
 ~/HamsterKombatBot >>> pip install -r requirements.txt
-~/HamsterKombatBot >>> playwright install
 ~/HamsterKombatBot >>> copy .env-example .env
 ~/HamsterKombatBot >>> # Open the .env file and enter your API_ID and API_HASH
 ~/HamsterKombatBot >>> python main.py
